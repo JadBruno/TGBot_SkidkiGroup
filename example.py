@@ -1,6 +1,4 @@
 import telebot
-import configure
-import sqlite3
 from telebot import types
 import threading
 from requests import get
