@@ -1,12 +1,11 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from config_reader import config
 import pymysql
 import pymysql.cursors
 
-
-API_TOKEN = '5641081713:AAE2--GwtG1P8t5LHxEYKqY5dXT-mMzWJRk'
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=config.bot_token.get_secret_value())
 dp = Dispatcher(bot)
 
 db_host = '23.105.226.124'
@@ -26,16 +25,16 @@ with connection.cursor() as cursor:
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
    kb = [[
-           types.KeyboardButton(text="📔 Каталог"),
+           types.KeyboardButton(text="Каталог"),
            types.KeyboardButton(text="❓ Как получить скидку")
         ],]
-   keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
-   await message.reply('Добрый день!\n В этом канале мы расскажем Вам как приобрести наши товар на Wildberries со скидкой до 100%\n Посмотрите раздел "Как получить скидку?" или сразу переходите в "Каталог" к выбору товаров.', reply_markup=keyboard)        
+   keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True, one_time_keyboard=True)
+   await message.answer('Добрый день!\n В этом канале мы расскажем Вам как приобрести наши товар на Wildberries со скидкой до 100%\n Посмотрите раздел "Как получить скидку?" или сразу переходите в "Каталог" к выбору товаров.', reply_markup=keyboard)        
 
 @dp.message_handler(commands=['Каталог'])
 async def send_welcome(message: types.Message):
    for el in result:
-      await message.answer(el["product_category_name"])
+      await message.answer(el["wb_category_name"])
 
 @dp.message_handler() #Создаём новое событие, которое запускается в ответ на любой текст, введённый пользователем.
 async def echo(message: types.Message): #Создаём функцию с простой задачей — отправить обратно тот же текст, что ввёл пользователь.
